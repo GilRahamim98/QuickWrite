@@ -4,14 +4,26 @@ import { Inter } from '@next/font/google'
 import { useEffect, useState } from 'react'
 import styles from '@/styles/Home.module.css'
 import PulseLoader from "react-spinners/PulseLoader";
-
+import Option from '@/components/Option'
+import { SuggstionInterface } from '@/utils/interfaces'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
-  const [suggstion, setSuggstion] = useState('')
+  const [suggstion, setSuggstion] = useState({
+    header:'',
+    article:''
+  })
+  const [headerOption,setHeaderOption]=useState({
+    label:'Add Header',
+    result:false
+  })
+  const [imagesOption,setImagesOption]=useState({
+    label:'Add Images',
+    result:false
+  })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -29,22 +41,39 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ input })
+        body: JSON.stringify({ input,headerOption })
 
       })
       const suggstion = await res.json()
-      const articleSuggestion: string = suggstion.result
-      setSuggstion(articleSuggestion)
+      setSuggstion({...suggstion})
     } catch (error) {
       console.log(error);
 
     } finally {
       setLoading(false)
     }
-
-
-
   }
+
+  const getHeader=(suggstionObject:SuggstionInterface)=>{
+    if(suggstionObject.header!==undefined){
+      const header=suggstionObject.header
+      const article=suggstionObject.article
+      return (
+        <div>
+          <h2 className='py-2 font-bold text-lg'>{header}</h2>
+          <p className='text-sm text-gray-700 '>
+            {article}  
+          </p>
+        </div>
+      )
+    }else{
+      return(<p className='text-sm text-gray-700 '>
+              {suggstionObject.article}  
+            </p>
+            )
+    }
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -79,6 +108,11 @@ export default function Home() {
               <span>{input.length}</span>/50
             </div>
           </div>
+          <div className='flex flex-row gap-4  mx-auto' >
+          <Option label={headerOption.label} result={headerOption.result} onChangeFunction={setHeaderOption}/>
+          <Option label={imagesOption.label} result={imagesOption.result} onChangeFunction={setImagesOption}/>
+ 
+          </div>
 
           <button type='button' className="bg-blue-500 hover:bg-blue-700 text-white 
           font-bold py-2 px-4 rounded" onClick={submit}>
@@ -86,13 +120,13 @@ export default function Home() {
               <PulseLoader color='#fff' size={8} />
             </span> : 'Generate'}</button>
 
-          {suggstion !== '' && (<div className='mt-12 '>
+          {suggstion.article !== '' && (<div className='mt-12 '>
             <h4 className='text-lg font-semibold py'>Your Generated Article:</h4>
             <div className="relative w-full rounded-md bg-gray-100 p-4">
 
-              <p className='text-sm text-gray-700 '>
-                {suggstion}
-              </p>
+            
+                {getHeader(suggstion)}
+             
             </div>
           </div>)
           }

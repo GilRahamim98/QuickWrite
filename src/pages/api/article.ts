@@ -4,7 +4,8 @@ import { OpenAIApi } from "openai"
 import { configuration } from '@/utils/constants';
 
 type Data = {
-  result: string
+  article: string,
+  header?: string
 }
 
 const openai = new OpenAIApi(configuration);
@@ -13,10 +14,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { input } = req.body
+  const { input, headerOption } = req.body
   const response = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt: `Write an article about the ${input}`,
+    prompt: `Write an article about the ${input} ${headerOption?.result ? ',and give it a header' : ''}`,
     temperature: 1,
     max_tokens: 2500,
     top_p: 1,
@@ -27,5 +28,11 @@ export default async function handler(
   if (suggestion === undefined) {
     throw new Error("No suggstion found")
   }
-  res.status(200).json({ result: suggestion })
+  if (headerOption?.result) {
+    res.status(200).json({ article: suggestion.split("\n\n").splice(2, suggestion.length).join("\n\n"), header: suggestion.split("\n\n")[1] })
+  } else {
+    res.status(200).json({ article: suggestion })
+
+  }
+
 }
