@@ -6,6 +6,7 @@ export interface OptionInterface {
 
 export interface SuggstionInterface {
     header: string,
-    article: string
+    article: string,
+    image: string
 
 }
