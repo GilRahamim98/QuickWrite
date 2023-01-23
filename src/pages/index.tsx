@@ -66,7 +66,7 @@ export default function Home() {
           <p className='text-sm text-gray-700 '>
             {article}
           </p>
-          <img className="h-auto max-w-full" src={imageUrl} alt={input} />
+          <Image className="h-auto max-w-full" src={imageUrl} alt={input} />
         </div>
       )
     } else if (suggstionObject.header !== undefined && !suggstion.image !== undefined) {
@@ -89,7 +89,7 @@ export default function Home() {
           <p className='text-sm text-gray-700 '>
             {article}
           </p>
-          <img className="h-auto max-w-full" src={imageUrl} alt={input} />
+          <Image className="h-auto max-w-full" src={imageUrl} alt={input} />
         </div>
       )
     }
