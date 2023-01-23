@@ -13,16 +13,17 @@ export default function Home() {
   const [input, setInput] = useState('')
   const [error, setError] = useState(false)
   const [suggstion, setSuggstion] = useState({
-    header:'',
-    article:''
+    header: '',
+    article: '',
+    image: ''
   })
-  const [headerOption,setHeaderOption]=useState({
-    label:'Add Header',
-    result:false
+  const [headerOption, setHeaderOption] = useState({
+    label: 'Add Header',
+    result: false
   })
-  const [imagesOption,setImagesOption]=useState({
-    label:'Add Images',
-    result:false
+  const [imagesOption, setImagesOption] = useState({
+    label: 'Add Images',
+    result: false
   })
   const [loading, setLoading] = useState(false)
 
@@ -41,11 +42,11 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ input,headerOption })
+        body: JSON.stringify({ input, headerOption, imagesOption })
 
       })
       const suggstion = await res.json()
-      setSuggstion({...suggstion})
+      setSuggstion({ ...suggstion })
     } catch (error) {
       console.log(error);
 
@@ -54,23 +55,49 @@ export default function Home() {
     }
   }
 
-  const getHeader=(suggstionObject:SuggstionInterface)=>{
-    if(suggstionObject.header!==undefined){
-      const header=suggstionObject.header
-      const article=suggstionObject.article
+  const getInfo = (suggstionObject: SuggstionInterface) => {
+    if (suggstionObject.header !== undefined && suggstionObject.image !== undefined) {
+      const header = suggstionObject.header
+      const article = suggstionObject.article
+      const imageUrl = suggstionObject.image
       return (
         <div>
           <h2 className='py-2 font-bold text-lg'>{header}</h2>
           <p className='text-sm text-gray-700 '>
-            {article}  
+            {article}
+          </p>
+          <img className="h-auto max-w-full" src={imageUrl} alt={input} />
+        </div>
+      )
+    } else if (suggstionObject.header !== undefined && !suggstion.image !== undefined) {
+      const header = suggstionObject.header
+      const article = suggstionObject.article
+      return (
+        <div>
+          <h2 className='py-2 font-bold text-lg'>{header}</h2>
+          <p className='text-sm text-gray-700 '>
+            {article}
           </p>
         </div>
       )
-    }else{
-      return(<p className='text-sm text-gray-700 '>
-              {suggstionObject.article}  
-            </p>
-            )
+    } else if (!suggstionObject.header !== undefined && suggstion.image !== undefined) {
+      const article = suggstionObject.article
+      const imageUrl = suggstionObject.image
+
+      return (
+        <div>
+          <p className='text-sm text-gray-700 '>
+            {article}
+          </p>
+          <img className="h-auto max-w-full" src={imageUrl} alt={input} />
+        </div>
+      )
+    }
+    else {
+      return (<p className='text-sm text-gray-700 '>
+        {suggstionObject.article}
+      </p>
+      )
     }
   }
 
@@ -109,9 +136,9 @@ export default function Home() {
             </div>
           </div>
           <div className='flex flex-row gap-4  mx-auto' >
-          <Option label={headerOption.label} result={headerOption.result} onChangeFunction={setHeaderOption}/>
-          <Option label={imagesOption.label} result={imagesOption.result} onChangeFunction={setImagesOption}/>
- 
+            <Option label={headerOption.label} result={headerOption.result} onChangeFunction={setHeaderOption} />
+            <Option label={imagesOption.label} result={imagesOption.result} onChangeFunction={setImagesOption} />
+
           </div>
 
           <button type='button' className="bg-blue-500 hover:bg-blue-700 text-white 
@@ -124,9 +151,9 @@ export default function Home() {
             <h4 className='text-lg font-semibold py'>Your Generated Article:</h4>
             <div className="relative w-full rounded-md bg-gray-100 p-4">
 
-            
-                {getHeader(suggstion)}
-             
+
+              {getInfo(suggstion)}
+
             </div>
           </div>)
           }
