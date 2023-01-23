@@ -17,3 +17,7 @@ After everything is installed:
 
 Then go in the terminal to the main folder:
 <pre>npm run dev</pre>
+
+## Importent info
+There is currently a problem with Vercel and you get a API 504s in production,so the demo isn't working.
+Hope it will be fixed soon!
